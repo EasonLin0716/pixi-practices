@@ -66,6 +66,7 @@
         // iterate through the dudes and update their position
         for (let i = 0; i < aliens.length; i++) {
           const dude = aliens[i];
+          // sprite's facing
           dude.direction += dude.turningSpeed * 0.01;
           dude.x += Math.sin(dude.direction) * dude.speed;
           dude.y += Math.cos(dude.direction) * dude.speed;

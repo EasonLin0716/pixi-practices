@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/5.1.3/pixi.min.js"></script>
+    <style>
+      html,
+      body {
+        padding: 0;
+        margin: 0;
+      }
+      canvas {
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <script>
+      const app = new PIXI.Application({ backgroundColor: 0x1099bb });
+      document.body.appendChild(app.view);
+      // create a texture from an image path
+      const texture = PIXI.Texture.from("examples/assets/rocket.png");
+      // Scale mode for pixelation
+      texture.baseTexture.scaleMode = PIXI.SCALE_MODES.NEAREST;
+      createRocket(
+        Math.floor(0.5 * app.screen.width),
+        Math.floor(0.25 * app.screen.height)
+      );
+      function createRocket(x, y) {
+        // create our little rocket friend..
+        const rocket = new PIXI.Sprite(texture);
+
+        // enable the rocket to be interactive... this will allow it to respond to mouse and touch events
+        rocket.interactive = true;
+
+        // this button mode will mean the hand cursor appears when you roll over the rocket with your mouse
+        rocket.buttonMode = true;
+
+        // center the rocket's anchor point
+        rocket.anchor.set(0.5);
+
+        // setup events for mouse + touch using
+        // the pointer events
+        rocket
+          .on("pointerdown", onDragStart)
+          .on("pointerup", onDragEnd)
+          .on("pointerupoutside", onDragEnd)
+          .on("pointermove", onDragMove);
+
+        // For mouse-only events
+        // .on('mousedown', onDragStart)
+        // .on('mouseup', onDragEnd)
+        // .on('mouseupoutside', onDragEnd)
+        // .on('mousemove', onDragMove);
+
+        // For touch-only events
+        // .on('touchstart', onDragStart)
+        // .on('touchend', onDragEnd)
+        // .on('touchendoutside', onDragEnd)
+        // .on('touchmove', onDragMove);
+
+        // move the sprite to its designated position
+        rocket.x = x;
+        rocket.y = y;
+
+        // add it to the stage
+        app.stage.addChild(rocket);
+      }
+
+      function onDragStart(event) {
+        // store a reference to the data
+        // the reason for this is because of multitouch
+        // we want to track the movement of this particular touch
+        this.data = event.data;
+        this.alpha = 0.5;
+        this.dragging = true;
+      }
+
+      function onDragEnd() {
+        this.alpha = 1;
+        this.dragging = false;
+        // set the interaction data to null
+        this.data = null;
+      }
+
+      function onDragMove() {
+        if (this.dragging) {
+          const newPosition = this.data.getLocalPosition(this.parent);
+          this.x = newPosition.x;
+          this.y = newPosition.y;
+        }
+      }
+    </script>
+  </body>
+</html>
